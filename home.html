@@ -14,7 +14,7 @@
 </head>
 
 <body class="">
-    <nav class="navbar navbar-expand-lg bg-body-tertiary bg-opacity-10">
+    <nav class="navbar sticky-top navbar-expand-lg bg-success bg-opacity-75">
       <div class="container-fluid">
         <a class="navbar-brand me-5" href="#"><h2 id = "headlineText">Farmfresh Groceries!</h2></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -22,13 +22,15 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item me-5 badge bg-success p-2">
+            <li class="nav-item me-5 badge bg-warning p-2">
                 <i class="fa-solid fa-cart-shopping fa-xl"
                 data-bs-toggle = "modal" data-bs-target = "#cartModal"></i>
                 <span id = "cartItems"></span>
             </li>
-            <li class="nav-item me-5 text-white">
-              <i class="fa-solid fa-heart fa-xl"></i>
+            <li class="nav-item me-5 badge bg-danger-subtle p-2">
+              <i class="fa-solid fa-heart fa-xl"
+              data-bs-toggle = "modal" data-bs-target = "#wishlistModal"></i>
+              <span id = "wishlistItems">(0)</span>
             </li>
             <li class="nav-item me-5 text-white">
                 <i 
@@ -52,7 +54,7 @@
         <div class="modal-dialog modal-md">
             <div class="modal-content bg-info-subtle">
                 <div class="modal-header">
-                        <form onkeyup="searchFun(event)" class="input-group">
+                    <form onkeyup="searchFun(event)" class="input-group">
                         <input type="text" class="form-control" id="searchString">
                         <input type="submit" class="btn btn-primary" value="Search">
                     </form>
@@ -86,14 +88,32 @@
                             </tr>
                         </thead>
                         <tbody id="tableRow">
-                          
+
                         </tbody>
                     </table>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer justify-content-between">
                     <button class="btn btn-warning" onclick="clearCart()"> 
                         Clear Cart
                     </button>
+                    <h5 id="totalPrice">Total Price: </h5>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modal fade" id = "wishlistModal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Your Wishlist</h2>
+                    <button class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row" id="wishlistRow">
+
+                    </div>
                 </div>
             </div>
         </div>

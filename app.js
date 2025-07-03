@@ -170,8 +170,14 @@ const displayItems = () => {
                             <h3>${value.name}</h3>
                             <h4>${value.price}</h4>
                             <p>${value.desc}</p>
-                            <button class="btn btn-primary" onclick = "addtoCart(${value.id})">Add to Cart</button>
-                            <button class="btn btn-success">Buy Now</button>
+                            <button class="btn btn-primary" 
+                            onclick = "addtoCart(${value.id})">
+                            Add to Cart
+                            </button>
+                            <button class="btn btn-success" 
+                            onclick = "addToWishlist(${value.id})">
+                            Add to Wishlist
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -190,7 +196,6 @@ const searchFun = (event) => {
     
     var matchList = dataObj.filter(
         (value) => value.name.toLowerCase().includes(searchList)
-        
     )
 
     var matchListMap = ""
@@ -207,7 +212,7 @@ const searchFun = (event) => {
                             <h4>${value.price}</h4>
                             <p>${value.desc}</p>
                             <button class="btn btn-primary" onclick = "addtoCart(${value.id})">Add to Cart</button>
-                            <button class="btn btn-success">Buy Now</button>
+                            <button class="btn btn-success">Add to Wishlist</button>
                         </div>
                     </div>
                 </div>
@@ -227,9 +232,11 @@ const logoff = () => {
     window.location.href = "index.html"
 }
 
-cartArray = []
-
+var cartArray = []
+var wishlistArray = []
 var itemCartCount = 0
+var wishlistCartCount = 0
+var totalPrice = 0
 
 const addtoCart = (productID) => {
     console.log(productID);
@@ -245,17 +252,19 @@ const addtoCart = (productID) => {
 
     if (itemAlreadyinCart) {
         cartProducts.quantity++
+        totalPrice += cartProducts.price
     } else {
         cartProducts.quantity = 1
+        totalPrice += cartProducts.price
         cartArray.push(cartProducts)
     }
     
     displaycartItems(cartArray)
     // cartCount 
     document.getElementById("cartItems").innerHTML = "(" + Number(itemCartCount) + ")"
+
+    document.getElementById("totalPrice").innerHTML = `Total: ${totalPrice}`
 }
-
-
 
 const displaycartItems = (cartData) => {
     var itemsList = ""
@@ -281,8 +290,6 @@ const displaycartItems = (cartData) => {
     document.getElementById("tableRow").innerHTML = itemsList
 }
 
-
-
 const clearCart = () => {
     document.getElementById("tableRow").innerHTML = ""
     document.getElementById("cartItems").innerHTML = ""
@@ -302,22 +309,90 @@ const removeQty = (productID) => {
     
     if (removeItemFromCart.quantity > 1) {
         removeItemFromCart.quantity--
+        totalPrice -= removeItemFromCart.price
     } else {
-        var removeItemEntry = cartArray.find( 
-            (value) => 
-            value.id === removeItemFromCart.id
+        // var removeItemEntry = cartArray.find( 
+        //     (value) => 
+        //     value.id === removeItemFromCart.id
+        // )
+        // var itemRemoval = cartArray.findIndex (
+        //     (item) => item.id === removeItemEntry.id
+        // )
+        // if (itemRemoval > -1) {
+        //     cartArray.splice(itemRemoval,1)
+        //     totalPrice -= itemRemoval.price
+        // }
+        cartArray = cartArray.filter(
+            (value) => value.id !== productID
         )
-        var itemRemoval = cartArray.findIndex (
-            (item) => item.id === removeItemEntry.id
-        )
-        if (itemRemoval > -1) {
-            cartArray.splice(itemRemoval,1)
-        }
-        
+        totalPrice -= removeItemFromCart.price
     }
-    console.log(cartArray);
     
     displaycartItems(cartArray)
 
     document.getElementById("cartItems").innerHTML = "(" + Number(itemCartCount) + ")"
+    document.getElementById("totalPrice").innerHTML = `Total: ${totalPrice}`
+}
+
+const addToWishlist = (productID) => {
+    
+    var wishlistID = dataObj.find(
+        (value) => value.id === productID 
+    )
+    var wishlistExists = wishlistArray.some(
+        (value) => value.id === wishlistID.id
+    )
+    if (!wishlistExists) {
+        wishlistArray.push(wishlistID)
+        wishlistCartCount++
+    }
+    
+    document.getElementById("wishlistItems").innerHTML = "(" + Number(wishlistCartCount) + ")"
+    displayWishlistItems(wishlistArray)
+}
+
+const displayWishlistItems = (wishlistData) => {
+    var wishlist = ""
+    wishlistData.map(
+        (value) => {
+            wishlist += 
+            `
+                <div class="col-lg-3">
+                    <div class="card my-5">
+                        <img src="${value.img}" 
+                        class = "img-fluid" alt="">
+                        <div class="card-body">
+                            <h3>${value.name}</h3>
+                            <h4>${value.price}</h4>
+                            <p>${value.desc}</p>
+                            <button class="btn btn-outline-danger"
+                            onclick= "removeFromWishlist(${value.id})">
+                            Remove
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `
+        }
+    )
+    document.getElementById("wishlistRow").innerHTML = wishlist
+}
+
+const removeFromWishlist = (productID) => {
+    console.log(productID)
+    
+    var removeItemFromWishlist = wishlistArray.find(
+        (item) => item.id === productID
+    )
+
+    // console.log(removeItemFromWishlist.id);
+    
+    wishlistArray = wishlistArray.filter(
+        (value) => value.id !== productID
+    )
+    wishlistCartCount--;
+
+    document.getElementById("wishlistItems").innerHTML = "(" + Number(wishlistCartCount) + ")"
+    
+    displayWishlistItems(wishlistArray)
 }
